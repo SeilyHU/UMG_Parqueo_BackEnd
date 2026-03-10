@@ -1,0 +1,5 @@
+# Comandos basicos (DEV):
+docker-compose -f docker-compose.dev.yml up --build
+
+# Comandos basicos (PROD):
+docker-compose -f docker-compose.prod.yml up --build -d
