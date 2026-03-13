@@ -1,22 +1,20 @@
-const model = require('../model/test.model');
+const oracledb = require('oracledb');
 
-// Funciona para listar la cuenta ya en moongo
-/*async function listAllTest(filter = {}) {
-  return await model.find(filter).sort({ fecha_creacion: -1 });
-}*/
+// Configuramos los datos una sola vez aquí
+const dbConfig = {
+    user: process.env.DB_USER || "SYSTEM",
+    password: process.env.DB_PASSWORD || "1234",
+    connectString: process.env.DB_CONNECTION_STRING || "localhost:1521/Estacionamientos_UMG"
+};
 
-// Funciona para listar la cuenta ya en moongo
-async function listAllTest() {
-  return new Promise((resolve, reject) => {
-    const testModel = {
-      id: 1,
-      nombre: 'Test',
-      tipo: 'Test'
+async function getConnection() {
+    try {
+        const connection = await oracledb.getConnection(dbConfig);
+        return connection;
+    } catch (err) {
+        console.error("❌ Error de conexión:", err.message);
+        throw err;
     }
-    return resolve(testModel);
-  });
 }
 
-module.exports = {
-  listAllTest
-};
+module.exports = { getConnection };
