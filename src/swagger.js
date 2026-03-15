@@ -8,132 +8,116 @@ const options = {
         version: '1.0.0', 
         description: 'Backend con IDs Automáticos y CRUD funcional' 
     },
-    servers: [{ url: 'http://localhost:4000' }],
+    servers: [
+      { url: 'http://localhost:4000', description: 'Servidor local' },
+      // Si tu app corre en otro host en producción cambia aquí o usa variable de entorno
+    ],
+    // Aquí integramos directamente la estructura de tus tablas sin usar YAML
+    components: {
+      schemas: {
+        Parqueo: {
+          type: 'object',
+          required: ['PQ_Parqueo', 'PQ_Nombre', 'PQ_Direccion', 'PQ_Capacidad'],
+          properties: {
+            PQ_Parqueo: { type: 'integer', description: 'ID del parqueo' },
+            PQ_Nombre: { type: 'string', description: 'Nombre del parqueo' },
+            PQ_Direccion: { type: 'string', description: 'Dirección física' },
+            PQ_Capacidad: { type: 'integer', description: 'Capacidad máxima' },
+          },
+        },
+        Espacio: {
+          type: 'object',
+          required: ['ES_Espacio', 'ES_Numero', 'ES_Estado', 'PQ_Parqueo'],
+          properties: {
+            ES_Espacio: { type: 'integer', description: 'ID único del espacio' },
+            ES_Numero: { type: 'integer', description: 'Número asignado' },
+            ES_Estado: { type: 'integer', description: 'Estado (1 Activo, 0 Inactivo)' },
+            PQ_Parqueo: { type: 'integer', description: 'ID del parqueo' },
+          },
+        },
+      },
+    },
     paths: {
-      // --- ASIGNACIÓN ---
-      '/asignacion': {
-        get: { summary: 'Listar todas las asignaciones', tags: ['Asignación'], responses: { 200: { description: 'OK' } } },
+      '/api/parqueos': {
+        get: {
+          tags: ['Parqueos'],
+          summary: 'Obtiene todos los parqueos',
+          responses: { '200': { description: 'Lista de parqueos' } }
+        },
         post: {
-          summary: 'Crear asignación',
-          tags: ['Asignación'],
+          tags: ['Parqueos'],
+          summary: 'Crea un parqueo',
           requestBody: {
             required: true,
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    estado: { type: 'number', example: 1 },
-                    usuarioId: { type: 'number' },
-                    espacioId: { type: 'number' },
-                    semestreId: { type: 'number' },
-                    jornadaId: { type: 'number' }
-                  }
-                }
-              }
-            }
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Parqueo' } } }
           },
-          responses: { 201: { description: 'Creado' } }
+          responses: { '201': { description: 'Parqueo creado' } }
         }
       },
-      '/asignacion/{id}': {
+      '/api/parqueos/{id}': {
         get: {
-          summary: 'Obtener asignación por ID',
-          tags: ['Asignación'],
-          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'number' } }],
-          responses: { 
-            200: { description: 'OK' },
-            404: { description: 'No encontrado' }
-          }
+          tags: ['Parqueos'],
+          summary: 'Obtiene un parqueo por ID',
+          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Datos del parqueo' } }
         },
         put: {
-          summary: 'Actualizar asignación',
-          tags: ['Asignación'],
-          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'number' } }],
+          tags: ['Parqueos'],
+          summary: 'Actualiza un parqueo',
+          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
           requestBody: {
             required: true,
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    estado: { type: 'number' },
-                    usuarioId: { type: 'number' },
-                    espacioId: { type: 'number' },
-                    semestreId: { type: 'number' },
-                    jornadaId: { type: 'number' }
-                  }
-                }
-              }
-            }
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Parqueo' } } }
           },
-          responses: { 200: { description: 'Actualizado' } }
+          responses: { '200': { description: 'Parqueo actualizado' } }
         },
         delete: {
-          summary: 'Eliminar asignación',
-          tags: ['Asignación'],
-          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'number' } }],
-          responses: { 200: { description: 'Eliminado' } }
+          tags: ['Parqueos'],
+          summary: 'Elimina un parqueo',
+          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Parqueo eliminado' } }
         }
       },
-      // --- JORNADA ---
-      '/jornada': {
-        get: { summary: 'Listar jornadas', tags: ['Jornada'], responses: { 200: { description: 'OK' } } },
-        post: {
-          summary: 'Crear jornada',
-          tags: ['Jornada'],
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    tipo: { type: 'string', example: 'MATUTINA' },
-                    descripcion: { type: 'string', example: 'Lunes a Viernes' }
-                  }
-                }
-              }
-            }
-          },
-          responses: { 201: { description: 'Creado' } }
-        }
-      },
-      '/jornada/{id}': {
+      '/api/espacios': {
         get: {
-          summary: 'Obtener jornada por ID',
-          tags: ['Jornada'],
-          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'number' } }],
-          responses: { 
-            200: { description: 'OK' },
-            404: { description: 'No encontrado' }
-          }
+          tags: ['Espacios'],
+          summary: 'Obtiene todos los espacios',
+          responses: { '200': { description: 'Lista de espacios' } }
         },
-        put: {
-          summary: 'Actualizar jornada',
-          tags: ['Jornada'],
-          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'number' } }],
+        post: {
+          tags: ['Espacios'],
+          summary: 'Crea un espacio',
           requestBody: {
             required: true,
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    tipo: { type: 'string' },
-                    descripcion: { type: 'string' }
-                  }
-                }
-              }
-            }
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Espacio' } } }
           },
-          responses: { 200: { description: 'Actualizado' } }
+          responses: { '201': { description: 'Espacio creado' } }
+        }
+      },
+      '/api/espacios/{id}': {
+        put: {
+          tags: ['Espacios'],
+          summary: 'Actualiza un espacio',
+          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+          requestBody: {
+            required: true,
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Espacio' } } }
+          },
+          responses: { '200': { description: 'Espacio actualizado' } }
         },
         delete: {
-          summary: 'Eliminar jornada',
-          tags: ['Jornada'],
-          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'number' } }],
-          responses: { 200: { description: 'Eliminado' } }
+          tags: ['Espacios'],
+          summary: 'Elimina un espacio',
+          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Espacio eliminado' } }
+        }
+      },
+      '/api/espacios/parqueo/{parqueoId}': {
+        get: {
+          tags: ['Espacios'],
+          summary: 'Filtra espacios por parqueo',
+          parameters: [{ in: 'path', name: 'parqueoId', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Lista de espacios' } }
         }
       }
     }
@@ -141,4 +125,6 @@ const options = {
   apis: []
 };
 
-module.exports = swaggerJSDoc(options);
+const swaggerSpec = swaggerJSDoc(options);
+
+module.exports = swaggerSpec;
