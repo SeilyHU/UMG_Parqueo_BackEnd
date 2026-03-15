@@ -10,9 +10,7 @@ const options = {
     },
     servers: [
       { url: 'http://localhost:4000', description: 'Servidor local' },
-      // Si tu app corre en otro host en producción cambia aquí o usa variable de entorno
     ],
-    // Aquí integramos directamente la estructura de tus tablas sin usar YAML
     components: {
       schemas: {
         Parqueo: {
@@ -35,6 +33,15 @@ const options = {
             PQ_Parqueo: { type: 'integer', description: 'ID del parqueo' },
           },
         },
+        Semestre: {
+        type: 'object',
+        required: ['SM_Semestre', 'SM_ANO', 'SM_Periodo'],
+        properties: {
+          SM_Semestre: { type: 'integer', description: 'ID único del semestre' },
+          SM_ANO: { type: 'integer', description: 'Año del semestre (ej. 2026)' },
+          SM_Periodo: { type: 'integer', description: 'Periodo (ej. 1 o 2)' }
+        }
+      },
       },
     },
     paths: {
@@ -119,7 +126,48 @@ const options = {
           parameters: [{ in: 'path', name: 'parqueoId', required: true, schema: { type: 'integer' } }],
           responses: { '200': { description: 'Lista de espacios' } }
         }
+      },
+      '/api/semestres': {
+      get: {
+        tags: ['Semestres'],
+        summary: 'Obtiene todos los semestres',
+        responses: { '200': { description: 'Lista de semestres' } }
+      },
+      post: {
+        tags: ['Semestres'],
+        summary: 'Crea un semestre',
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: { $ref: '#/components/schemas/Semestre' } } }
+        },
+        responses: { '201': { description: 'Semestre creado' } }
       }
+    },
+    '/api/semestres/{id}': {
+      get: {
+        tags: ['Semestres'],
+        summary: 'Obtiene un semestre por ID',
+        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+        responses: { '200': { description: 'Datos del semestre' } }
+      },
+      put: {
+        tags: ['Semestres'],
+        summary: 'Actualiza un semestre',
+        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: { $ref: '#/components/schemas/Semestre' } } }
+        },
+        responses: { '200': { description: 'Semestre actualizado' } }
+      },
+      delete: {
+        tags: ['Semestres'],
+        summary: 'Elimina un semestre',
+        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+        responses: { '200': { description: 'Semestre eliminado' } }
+      }
+    }
+      
     }
   },
   apis: []
