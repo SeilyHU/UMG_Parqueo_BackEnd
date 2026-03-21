@@ -5,7 +5,8 @@ const Parqueo = require('./parqueo.model');
 const Espacio = sequelize.define('Espacio', {
     ES_Espacio: {
         type: DataTypes.BIGINT,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
     },
     ES_Numero: {
         type: DataTypes.INTEGER

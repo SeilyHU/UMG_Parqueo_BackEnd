@@ -25,7 +25,6 @@ exports.getJornadaById = async (req, res) => {
 // Equivale a add()
 exports.createJornada = async (req, res) => {
     try {
-        // data: { JD_TipoJornada, JD_Descripcion }
         const nuevaJornada = await Jornada.create(req.body); 
         res.status(201).json({ message: "Jornada creada exitosamente", data: nuevaJornada });
     } catch (error) {

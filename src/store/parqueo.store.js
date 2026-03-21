@@ -13,7 +13,6 @@ class ParqueoStore {
 
     static async create(data) {
         return await Parqueo.create({
-            PQ_Parqueo: data.PQ_Parqueo,
             PQ_Nombre: data.PQ_Nombre,
             PQ_Direccion: data.PQ_Direccion,
             PQ_Capacidad: data.PQ_Capacidad

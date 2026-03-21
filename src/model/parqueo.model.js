@@ -4,7 +4,8 @@ const {sequelize} = require('../config/db');
 const Parqueo = sequelize.define('Parqueo', {
     PQ_Parqueo: {
         type: DataTypes.BIGINT,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
     },
     PQ_Nombre: {
         type: DataTypes.STRING(100)

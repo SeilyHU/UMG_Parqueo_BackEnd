@@ -14,7 +14,6 @@ class VehiculoStore {
 
     static async create(data) {
         return await Vehiculo.create({
-            VH_Vehiculo: data.VH_Vehiculo,
             VH_Placa: data.VH_Placa,
             VH_Marca: data.VH_Marca,
             VH_Modelo: data.VH_Modelo,

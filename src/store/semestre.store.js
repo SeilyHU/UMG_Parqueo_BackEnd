@@ -13,7 +13,6 @@ class SemestreStore {
 
     static async create(data) {
         return await Semestre.create({
-            SM_Semestre: data.SM_Semestre,
             SM_ANO: data.SM_ANO,
             SM_Periodo: data.SM_Periodo
         });

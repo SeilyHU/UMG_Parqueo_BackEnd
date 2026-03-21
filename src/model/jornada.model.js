@@ -5,7 +5,7 @@ const Jornada = sequelize.define('Jornada', {
     JD_Jornada: {
         type: DataTypes.BIGINT,
         primaryKey: true,
-        autoIncrement: true 
+        autoIncrement: true
     },
     JD_TipoJornada: {
         type: DataTypes.STRING(50)

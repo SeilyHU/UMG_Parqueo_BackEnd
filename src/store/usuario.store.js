@@ -14,7 +14,6 @@ class UsuarioStore {
 
     static async create(data) {
         return await Usuario.create({
-            US_Identificacion: data.US_Identificacion,
             US_Nombre: data.US_Nombre,
             US_Apellido: data.US_Apellido,
             US_Email: data.US_Email,

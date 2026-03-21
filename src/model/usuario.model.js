@@ -4,7 +4,9 @@ const { sequelize } = require('../config/db');
 const Usuario = sequelize.define('Usuario', {
     US_Identificacion: {
         type: DataTypes.BIGINT,
-        primaryKey: true
+        primaryKey: true,
+                autoIncrement: true
+
     },
     US_Nombre: {
         type: DataTypes.STRING

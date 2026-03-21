@@ -4,7 +4,9 @@ const { sequelize } = require('../config/db');
 const Vehiculo = sequelize.define('Vehiculo', {
     VH_Vehiculo: {
         type: DataTypes.BIGINT,
-        primaryKey: true
+        primaryKey: true,
+                autoIncrement: true
+
     },
     VH_Placa: {
         type: DataTypes.STRING

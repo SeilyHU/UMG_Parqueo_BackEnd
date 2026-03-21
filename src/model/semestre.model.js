@@ -4,7 +4,8 @@ const { sequelize } = require('../config/db');
 const Semestre = sequelize.define('Semestre', {
     SM_Semestre: {
         type: DataTypes.BIGINT,
-        primaryKey: true
+        primaryKey: true,
+                autoIncrement: true
     },
     SM_ANO: {
         type: DataTypes.INTEGER

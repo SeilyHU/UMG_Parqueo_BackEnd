@@ -6,7 +6,7 @@ const options = {
     info: { 
       title: 'UMG Parqueos API', 
       version: '1.0.0', 
-      description: 'Backend con IDs Automáticos (Identity) y CRUD funcional con Sequelize y Oracle' 
+      description: 'Backend para control de Disponibilidad de Parqueos.' 
     },
     servers: [
       { 
@@ -14,22 +14,17 @@ const options = {
         description: 'Servidor local' 
       },
     ],
-
     components: {
       schemas: {
-
+        
         Parqueo: {
           type: 'object',
-          required: ['PQ_Nombre','PQ_Direccion','PQ_Capacidad'],
+          required: ['PQ_Nombre', 'PQ_Direccion', 'PQ_Capacidad'],
           properties: {
-            PQ_Parqueo: { 
-              type: 'integer', 
-              description: 'Generado automáticamente por Oracle',
-              readOnly: true // 🛡️ Bloquea el envío en POST/PUT
-            },
-            PQ_Nombre: { type: 'string' },
-            PQ_Direccion: { type: 'string' },
-            PQ_Capacidad: { type: 'integer' }
+            PQ_Parqueo: { type: 'integer', readOnly: true },
+            PQ_Nombre: { type: 'string', example: 'Parqueo Central' },
+            PQ_Direccion: { type: 'string', example: 'Campus Central UMG' },
+            PQ_Capacidad: { type: 'integer', example: 150 }
           }
         },
 
@@ -37,11 +32,7 @@ const options = {
           type: 'object',
           required: ['JD_TipoJornada', 'JD_Descripcion'],
           properties: {
-            JD_Jornada: { 
-              type: 'integer', 
-              description: 'Generado automáticamente por Oracle',
-              readOnly: true // 🛡️ Bloquea el envío en POST/PUT
-            },
+            JD_Jornada: { type: 'integer', readOnly: true },
             JD_TipoJornada: { type: 'string', example: 'Matutina' },
             JD_Descripcion: { type: 'string', example: 'Lunes a Viernes 07:00 - 12:00' }
           }
@@ -49,47 +40,47 @@ const options = {
 
         Espacio: {
           type: 'object',
-          required: ['ES_Numero','ES_Estado','PQ_Parqueo'],
+          required: ['ES_Numero', 'ES_Estado', 'PQ_Parqueo'],
           properties: {
             ES_Espacio: { type: 'integer', readOnly: true },
-            ES_Numero: { type: 'integer' },
-            ES_Estado: { type: 'integer' },
-            PQ_Parqueo: { type: 'integer' }
+            ES_Numero: { type: 'integer', example: 101 },
+            ES_Estado: { type: 'integer', example: 1 },
+            PQ_Parqueo: { type: 'integer', example: 1 }
           }
         },
 
         Semestre: {
           type: 'object',
-          required: ['SM_ANO','SM_Periodo'],
+          required: ['SM_ANO', 'SM_Periodo'],
           properties: {
             SM_Semestre: { type: 'integer', readOnly: true },
-            SM_ANO: { type: 'integer' },
-            SM_Periodo: { type: 'integer' }
+            SM_ANO: { type: 'integer', example: 2026 },
+            SM_Periodo: { type: 'integer', example: 1 }
           }
         },
 
         Usuario: {
           type: 'object',
-          required: ['US_Identificacion','US_Nombre','US_Apellido','US_Email','US_Pass'],
+          required: ['US_Nombre', 'US_Apellido', 'US_Email', 'US_Pass'],
           properties: {
-            US_Identificacion: { type: 'integer' }, // Este suele ser DPI/Cédula, podrías dejarlo editable
-            US_Nombre: { type: 'string' },
-            US_Apellido: { type: 'string' },
-            US_Email: { type: 'string' },
-            US_Telefono: { type: 'integer' },
-            US_Pass: { type: 'string' }
+            US_Identificacion: { type: 'integer', readOnly: true },
+            US_Nombre: { type: 'string', example: 'Juan' },
+            US_Apellido: { type: 'string', example: 'Pérez' },
+            US_Email: { type: 'string', example: 'jperez@miumg.edu.gt' },
+            US_Telefono: { type: 'integer', example: 55551234 },
+            US_Pass: { type: 'string', example: 'Password123' }
           }
         },
 
         Vehiculo: {
           type: 'object',
-          required: ['VH_Placa','VH_Marca','VH_Modelo','US_Identificacion'],
+          required: ['VH_Placa', 'VH_Marca', 'VH_Modelo', 'US_Identificacion'],
           properties: {
             VH_Vehiculo: { type: 'integer', readOnly: true },
-            VH_Placa: { type: 'string' },
-            VH_Marca: { type: 'string' },
-            VH_Modelo: { type: 'string' },
-            US_Identificacion: { type: 'integer' }
+            VH_Placa: { type: 'string', example: 'P-123ABC' },
+            VH_Marca: { type: 'string', example: 'Toyota' },
+            VH_Modelo: { type: 'string', example: 'Corolla' },
+            US_Identificacion: { type: 'integer', example: 1 }
           }
         }
       }
@@ -97,108 +88,57 @@ const options = {
 
     paths: {
       '/api/parqueos': {
-        get: { tags:['Parqueos'], summary:'Obtiene todos los parqueos', responses:{'200':{description:'Lista'}} },
+        get: { tags: ['Parqueos'], summary: 'Obtiene todos los parqueos', responses: { '200': { description: 'Ok' } } },
         post: {
-          tags:['Parqueos'],
-          summary:'Crea parqueo (El ID se ignora)',
-          requestBody:{
-            required:true,
-            content:{'application/json':{schema:{$ref:'#/components/schemas/Parqueo'}}}
-          },
-          responses:{'201':{description:'Creado'}}
+          tags: ['Parqueos'],
+          summary: 'Crea un parqueo',
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Parqueo' } } } },
+          responses: { '201': { description: 'Creado' } }
         }
       },
-
       '/api/jornadas': {
-        get: { 
-          tags:['Jornadas'], 
-          summary:'Lista todas las jornadas', 
-          responses:{'200':{description:'Lista de jornadas'}} 
-        },
+        get: { tags: ['Jornadas'], summary: 'Obtiene todas las jornadas', responses: { '200': { description: 'Ok' } } },
         post: {
-          tags:['Jornadas'],
-          summary:'Crear nueva jornada (El ID se ignora)',
-          requestBody:{
-            required:true,
-            content:{'application/json':{schema:{$ref:'#/components/schemas/Jornada'}}}
-          },
-          responses:{'201':{description:'Creado'}}
+          tags: ['Jornadas'],
+          summary: 'Crea una jornada',
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Jornada' } } } },
+          responses: { '201': { description: 'Creado' } }
         }
       },
-      '/api/jornadas/{id}': {
-        get: {
-          tags: ['Jornadas'],
-          summary: 'Obtiene una jornada por ID',
-          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
-          responses: { '200': { description: 'Ok' }, '404': { description: 'No encontrado' } }
-        },
-        put: {
-          tags: ['Jornadas'],
-          summary: 'Actualiza una jornada (No permite cambiar el ID)',
-          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
-          requestBody: {
-            required: true,
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/Jornada' } } }
-          },
-          responses: { '200': { description: 'Actualizado' } }
-        },
-        delete: {
-          tags: ['Jornadas'],
-          summary: 'Elimina una jornada',
-          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
-          responses: { '200': { description: 'Eliminado' } }
-        }
-      },
-
       '/api/espacios': {
-        get:{ tags:['Espacios'], summary:'Lista espacios', responses:{'200':{description:'Lista'}}},
-        post:{
-          tags:['Espacios'],
-          summary:'Crear espacio',
-          requestBody:{
-            required:true,
-            content:{'application/json':{schema:{$ref:'#/components/schemas/Espacio'}}}
-          },
-          responses:{'201':{description:'Creado'}}
+        get: { tags: ['Espacios'], summary: 'Obtiene los espacios', responses: { '200': { description: 'Ok' } } },
+        post: {
+          tags: ['Espacios'],
+          summary: 'Crea un espacio',
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Espacio' } } } },
+          responses: { '201': { description: 'Creado' } }
         }
       },
-
       '/api/semestres': {
-        get:{ tags:['Semestres'], summary:'Lista semestres', responses:{'200':{description:'Lista'}}},
-        post:{
-          tags:['Semestres'],
-          summary:'Crear semestre',
-          requestBody:{
-            required:true,
-            content:{'application/json':{schema:{$ref:'#/components/schemas/Semestre'}}}
-          },
-          responses:{'201':{description:'Creado'}}
+        get: { tags: ['Semestres'], summary: 'Obtiene semestres', responses: { '200': { description: 'Ok' } } },
+        post: {
+          tags: ['Semestres'],
+          summary: 'Crea un semestre',
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Semestre' } } } },
+          responses: { '201': { description: 'Creado' } }
         }
       },
-
-      '/api/usuario': {
-        get:{ tags:['Usuarios'], summary:'Lista usuarios', responses:{'200':{description:'Lista'}}},
-        post:{
-          tags:['Usuarios'],
-          summary:'Crear usuario',
-          requestBody:{
-            required:true,
-            content:{'application/json':{schema:{$ref:'#/components/schemas/Usuario'}}}
-          },
-          responses:{'201':{description:'Creado'}}
+      '/api/usuarios': {
+        get: { tags: ['Usuarios'], summary: 'Obtiene usuarios', responses: { '200': { description: 'Ok' } } },
+        post: {
+          tags: ['Usuarios'],
+          summary: 'Crea un usuario',
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Usuario' } } } },
+          responses: { '201': { description: 'Creado' } }
         }
       },
-
-      '/api/vehiculo': {
-        get:{ tags:['Vehiculos'], summary:'Lista vehículos', responses:{'200':{description:'Lista'}}},
-        post:{
-          tags:['Vehiculos'],
-          summary:'Crear vehículo',
-          requestBody:{
-            required:true,
-            content:{'application/json':{schema:{$ref:'#/components/schemas/Vehiculo'}}}
-          },
-          responses:{'201':{description:'Creado'}}
+      '/api/vehiculos': {
+        get: { tags: ['Vehiculos'], summary: 'Obtiene vehículos', responses: { '200': { description: 'Ok' } } },
+        post: {
+          tags: ['Vehiculos'],
+          summary: 'Crea un vehículo',
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Vehiculo' } } } },
+          responses: { '201': { description: 'Creado' } }
         }
       }
     }
@@ -206,5 +146,4 @@ const options = {
   apis: [] 
 };
 
-const swaggerSpec = swaggerJSDoc(options);
-module.exports = swaggerSpec;
+module.exports = swaggerJSDoc(options);

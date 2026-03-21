@@ -15,7 +15,6 @@ class EspacioStore {
 
     static async create(data) {
         return await Espacio.create({
-            ES_Espacio: data.ES_Espacio,
             ES_Numero: data.ES_Numero,
             ES_Estado: data.ES_Estado,
             PQ_Parqueo: data.PQ_Parqueo
