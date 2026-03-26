@@ -1,23 +1,39 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
+const FormaPago = require('../model/formaPago.model');
 
-const FormaPago = sequelize.define('FormaPago', {
-    FPG_id_forma_pago: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        allowNull: false
-    },
-    FPG_nombre_forma: {
-        type: DataTypes.STRING(50),
-        allowNull: false
-    },
-    FPG_estado: {
-        type: DataTypes.CHAR(1),
-        allowNull: false
+class FormaPagoStore {
+    
+    static async getAll() {
+        return await FormaPago.findAll({
+            order: [['FPG_id_forma_pago', 'ASC']]
+        });
     }
-}, {
-    tableName: 'PAR_FORMAS_PAGO',
-    timestamps: false
-});
 
-module.exports = FormaPago;
+    static async getById(id) {
+        return await FormaPago.findByPk(id);
+    }
+
+    static async create(data) {
+        return await FormaPago.create({
+            FPG_id_forma_pago: data.FPG_id_forma_pago,
+            FPG_nombre_forma: data.FPG_nombre_forma,
+            FPG_estado: data.FPG_estado
+        });
+    }
+
+    static async update(id, data) {
+        return await FormaPago.update({
+            FPG_nombre_forma: data.FPG_nombre_forma,
+            FPG_estado: data.FPG_estado
+        }, {
+            where: { FPG_id_forma_pago: id }
+        });
+    }
+
+    static async delete(id) {
+        return await FormaPago.destroy({
+            where: { FPG_id_forma_pago: id }
+        });
+    }
+}
+
+module.exports = FormaPagoStore;
