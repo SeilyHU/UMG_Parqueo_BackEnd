@@ -371,24 +371,6 @@ const options = {
             '500': { description: 'Error al actualizar la multa' }
           }
         },
-        delete: {
-          tags: ['Multas'],
-          summary: 'Elimina una multa',
-          parameters: [
-            {
-              name: 'id',
-              in: 'path',
-              required: true,
-              description: 'ID de la multa',
-              schema: { type: 'integer', format: 'int64' }
-            }
-          ],
-          responses: {
-            '200': { description: 'Multa eliminada exitosamente' },
-            '404': { description: 'Multa no encontrada para eliminar' },
-            '500': { description: 'Error al eliminar la multa' }
-          }
-        }
       },
 
       '/api/forma_pago': {
