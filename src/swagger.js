@@ -6,7 +6,7 @@ const options = {
     info: { 
       title: 'UMG Parqueos API', 
       version: '1.0.0', 
-      description: 'Backend para control de Disponibilidad de Parqueos.' 
+      description: 'Backend para control de Disponibilidad de Parqueos.\n\n**Nota sobre Tiempo Real:**\nEste servidor utiliza `socket.io`. El frontend puede conectarse a la raíz del servidor para escuchar actualizaciones del mapa en tiempo real.' 
     },
     servers: [
       { 
@@ -172,6 +172,7 @@ const options = {
         post: {
           tags: ['asignacion'],
           summary: 'Asigna un espacio (Valida disponibilidad)',
+          description: 'Si la asignación es exitosa, el servidor emite un evento de Socket.io llamado `espacioOcupado` para actualizar el frontend en tiempo real.',
           requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Asignacion' } } } },
           responses: { 
             '201': { description: 'Asignación exitosa' },
@@ -183,6 +184,7 @@ const options = {
         put: {
           tags: ['asignacion'],
           summary: 'Anula una asignación (Cambia estado a 0)',
+          description: 'Al anular la asignación, el servidor emite un evento de Socket.io llamado `espacioLiberado` para que el frontend ponga el espacio disponible de nuevo.',
           parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
           responses: { '200': { description: 'Anulado correctamente' } }
         }

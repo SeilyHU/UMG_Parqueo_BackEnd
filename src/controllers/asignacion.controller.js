@@ -34,6 +34,14 @@ exports.createAsignacion = async (req, res) => {
 
         await AsignacionStore.create(req.body);
         
+        const io = req.app.get('socketio');
+        if (io) {
+            io.emit('espacioOcupado', { 
+                ES_Espacio: ES_Espacio,
+                mensaje: `El espacio ${ES_Espacio} acaba de ser reservado.`
+            });
+        }
+        
         res.status(201).json({ 
             message: '¡Asignación creada exitosamente!',
             disponible: true
@@ -59,6 +67,15 @@ exports.anularAsignacion = async (req, res) => {
         if (rowsAffected[0] === 0) {
             return res.status(404).json({ message: 'Asignación no encontrada' });
         }
+
+        const io = req.app.get('socketio');
+        if (io) {
+            io.emit('espacioLiberado', { 
+                AS_Asignacion: req.params.id,
+                mensaje: `Una asignación fue anulada. Revisa el mapa de disponibilidad.`
+            });
+        }
+
         res.status(200).json({ message: 'Asignación anulada (El espacio vuelve a estar disponible)' });
     } catch (error) {
         res.status(500).json({ message: 'Error al anular asignación', error: error.message });
