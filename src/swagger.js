@@ -93,6 +93,7 @@ const options = {
       }
     },
     paths: {
+      // --- PARQUEOS ---
       '/api/parqueos': {
         get: { tags: ['Parqueos'], summary: 'Obtiene todos los parqueos', responses: { '200': { description: 'Ok' } } },
         post: {
@@ -106,6 +107,46 @@ const options = {
         get: { tags: ['Parqueos'], summary: 'Obtiene un parqueo por ID', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Ok' } } },
         delete: { tags: ['Parqueos'], summary: 'Elimina un parqueo', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Eliminado' } } }
       },
+
+      // --- ESPACIOS (RUTAS SOLICITADAS) ---
+      '/api/espacios': {
+        get: { 
+          tags: ['Espacios'], 
+          summary: 'Obtiene todos los espacios registrados', 
+          responses: { '200': { description: 'Lista de espacios obtenida' } } 
+        },
+        post: {
+          tags: ['Espacios'],
+          summary: 'Crea un nuevo espacio',
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Espacio' } } } },
+          responses: { '201': { description: 'Espacio creado' } }
+        }
+      },
+      '/api/espacios/parqueo/{parqueoId}': {
+        get: {
+          tags: ['Espacios'],
+          summary: 'Obtiene los espacios asociados a un parqueo específico',
+          parameters: [{ name: 'parqueoId', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Lista de espacios del parqueo' } }
+        }
+      },
+      '/api/espacios/{id}': {
+        put: {
+          tags: ['Espacios'],
+          summary: 'Actualiza un espacio por ID',
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Espacio' } } } },
+          responses: { '200': { description: 'Espacio actualizado' } }
+        },
+        delete: {
+          tags: ['Espacios'],
+          summary: 'Elimina un espacio por ID',
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Espacio eliminado' } }
+        }
+      },
+
+      // --- JORNADAS ---
       '/api/jornadas': {
         get: { tags: ['Jornadas'], summary: 'Obtiene todas las jornadas', responses: { '200': { description: 'Ok' } } },
         post: {
@@ -119,15 +160,8 @@ const options = {
         get: { tags: ['Jornadas'], summary: 'Obtiene una jornada por ID', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Ok' } } },
         delete: { tags: ['Jornadas'], summary: 'Elimina una jornada', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Eliminado' } } }
       },
-      '/api/espacios': {
-        get: { tags: ['Espacios'], summary: 'Obtiene los espacios', responses: { '200': { description: 'Ok' } } },
-        post: {
-          tags: ['Espacios'],
-          summary: 'Crea un espacio',
-          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Espacio' } } } },
-          responses: { '201': { description: 'Creado' } }
-        }
-      },
+
+      // --- SEMESTRES ---
       '/api/semestres': {
         get: { tags: ['Semestres'], summary: 'Obtiene semestres', responses: { '200': { description: 'Ok' } } },
         post: {
@@ -141,6 +175,8 @@ const options = {
         get: { tags: ['Semestres'], summary: 'Obtiene un semestre por ID', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Ok' } } },
         delete: { tags: ['Semestres'], summary: 'Elimina un semestre', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Eliminado' } } }
       },
+
+      // --- USUARIOS ---
       '/api/usuarios': {
         get: { tags: ['Usuarios'], summary: 'Obtiene usuarios', responses: { '200': { description: 'Ok' } } },
         post: {
@@ -154,6 +190,8 @@ const options = {
         get: { tags: ['Usuarios'], summary: 'Obtiene un usuario por ID', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Ok' } } },
         delete: { tags: ['Usuarios'], summary: 'Elimina un usuario', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Eliminado' } } }
       },
+
+      // --- VEHICULOS ---
       '/api/vehiculos': {
         get: { tags: ['Vehiculos'], summary: 'Obtiene vehículos', responses: { '200': { description: 'Ok' } } },
         post: {
@@ -167,12 +205,14 @@ const options = {
         get: { tags: ['Vehiculos'], summary: 'Obtiene un vehículo por ID', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Ok' } } },
         delete: { tags: ['Vehiculos'], summary: 'Elimina un vehículo', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Eliminado' } } }
       },
+
+      // --- ASIGNACIONES ---
       '/api/asignacion': {
         get: { tags: ['asignacion'], summary: 'Obtiene todas las asignaciones', responses: { '200': { description: 'Ok' } } },
         post: {
           tags: ['asignacion'],
           summary: 'Asigna un espacio (Valida disponibilidad)',
-          description: 'Si la asignación es exitosa, el servidor emite un evento de Socket.io llamado `espacioOcupado` para actualizar el frontend en tiempo real.',
+          description: 'Si la asignación es exitosa, el servidor emite un evento de Socket.io llamado `espacioOcupado`.',
           requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/Asignacion' } } } },
           responses: { 
             '201': { description: 'Asignación exitosa' },
@@ -184,7 +224,7 @@ const options = {
         put: {
           tags: ['asignacion'],
           summary: 'Anula una asignación (Cambia estado a 0)',
-          description: 'Al anular la asignación, el servidor emite un evento de Socket.io llamado `espacioLiberado` para que el frontend ponga el espacio disponible de nuevo.',
+          description: 'Al anular, el servidor emite un evento de Socket.io llamado `espacioLiberado`.',
           parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
           responses: { '200': { description: 'Anulado correctamente' } }
         }
