@@ -4,63 +4,47 @@ class EstudianteMultaStore {
     
     static async getAll() {
         return await EstudianteMulta.findAll({
-            order: [['MUL_id_multa', 'ASC'], ['EST_id_estudiante', 'ASC']]
+            order: [['EMU_ID_EST_MULTA', 'ASC']]
         });
     }
 
-    static async getById(multa_id, estudiante_id) {
-        return await EstudianteMulta.findOne({
-            where: { 
-                MUL_id_multa: multa_id,
-                EST_id_estudiante: estudiante_id
-            }
-        });
-    }
-
-    static async getByEstudianteId(estudiante_id) {
+    static async getByEstudianteId(ESTUDIANTE_ID) {
         return await EstudianteMulta.findAll({
-            where: { EST_id_estudiante: estudiante_id }
-        });
-    }
-
-    static async getByMultaId(multa_id) {
-        return await EstudianteMulta.findAll({
-            where: { MUL_id_multa: multa_id }
+            where: { EST_ID_ESTUDIANTE: ESTUDIANTE_ID }
         });
     }
 
     static async create(data) {
         return await EstudianteMulta.create({
-            MUL_id_multa: data.MUL_id_multa,
-            EST_id_estudiante: data.EST_id_estudiante,
-            EMU_estado_multa: data.EMU_estado_multa,
-            EMU_creado_por: data.EMU_creado_por,
-            EMU_fecha_creacion: data.EMU_fecha_creacion || new Date(),
-            EMU_modificado_por: data.EMU_modificado_por || null,
-            EMU_fecha_modificacion: data.EMU_fecha_modificacion || null,
-            EMU_direccion_ip: data.EMU_direccion_ip || null
+            EMU_ID_EST_MULTA: data.EMU_ID_EST_MULTA,
+            MUL_ID_MULTA: data.MUL_ID_MULTA,
+            EST_ID_ESTUDIANTE: data.EST_ID_ESTUDIANTE,
+            EMU_ESTADO_MULTA: data.EMU_ESTADO_MULTA,
+            EMU_CREADO_POR: data.EMU_CREADO_POR,
+            EMU_FECHA_CREACION: data.EMU_FECHA_CREACION || new Date(),
+            EMU_MODIFICADO_POR: data.EMU_MODIFICADO_POR || null,
+            EMU_FECHA_MODIFICACION: data.EMU_FECHA_MODIFICACION || null,
+            EMU_DIRECCION_IP: data.EMU_DIRECCION_IP || null
         });
     }
 
-    static async update(multa_id, estudiante_id, data) {
+    static async update(EMU_ID_EST_MULTA, data) {
         return await EstudianteMulta.update({
-            EMU_estado_multa: data.EMU_estado_multa,
-            EMU_modificado_por: data.EMU_modificado_por,
-            EMU_fecha_modificacion: data.EMU_fecha_modificacion || new Date(),
-            EMU_direccion_ip: data.EMU_direccion_ip
+            EMU_ESTADO_MULTA: data.EMU_ESTADO_MULTA,
+            EMU_MODIFICADO_POR: data.EMU_MODIFICADO_POR,
+            EMU_FECHA_MODIFICACION: data.EMU_FECHA_MODIFICACION || new Date(),
+            EMU_DIRECCION_IP: data.EMU_DIRECCION_IP
         }, {
             where: { 
-                MUL_id_multa: multa_id,
-                EST_id_estudiante: estudiante_id
+                EMU_ID_EST_MULTA: EMU_ID_EST_MULTA
             }
         });
     }
 
-    static async delete(multa_id, estudiante_id) {
+    static async delete(EMU_ID_EST_MULTA) {
         return await EstudianteMulta.destroy({
             where: { 
-                MUL_id_multa: multa_id,
-                EST_id_estudiante: estudiante_id
+                EMU_ID_EST_MULTA: EMU_ID_EST_MULTA
             }
         });
     }

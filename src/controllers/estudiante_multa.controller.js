@@ -6,52 +6,21 @@ exports.getAllEstudianteMulta = async (req, res) => {
         res.status(200).json(estudianteMulta);
     } catch (error) {
         res.status(500).json({
-            message: 'Error al obtener los registros',
+            message: 'Error al obtener el registro de Estudiante y Multa',
             error: error.message
         });
     }
 };
 
-exports.getEstudianteMultaById = async (req, res) => {
+exports.getEstudianteMultaByEstudianteId = async (req, res) => {
     try {
-        const { multa_id, estudiante_id } = req.params;
-        const estudianteMulta = await EstudianteMultaStore.getById(multa_id, estudiante_id);
+        const { EST_ID_ESTUDIANTE } = req.params;
+        const estudianteMulta = await EstudianteMultaStore.getByEstudianteId(EST_ID_ESTUDIANTE);
         
-        if (!estudianteMulta) {
-            return res.status(404).json({
-                message: 'Registro no encontrado'
-            });
-        }
         res.status(200).json(estudianteMulta);
     } catch (error) {
         res.status(500).json({
-            message: 'Error al obtener el registro',
-            error: error.message
-        });
-    }
-};
-
-exports.getEstudianteMultasByEstudianteId = async (req, res) => {
-    try {
-        const { estudiante_id } = req.params;
-        const estudianteMulta = await EstudianteMultaStore.getByEstudianteId(estudiante_id);
-        res.status(200).json(estudianteMulta);
-    } catch (error) {
-        res.status(500).json({
-            message: 'Error al obtener los registros del estudiante',
-            error: error.message
-        });
-    }
-};
-
-exports.getEstudianteMultasByMultaId = async (req, res) => {
-    try {
-        const { multa_id } = req.params;
-        const estudianteMulta = await EstudianteMultaStore.getByMultaId(multa_id);
-        res.status(200).json(estudianteMulta);
-    } catch (error) {
-        res.status(500).json({
-            message: 'Error al obtener los registros de la multa',
+            message: 'Error al obtener el registro de Estudiante y Multa',
             error: error.message
         });
     }
@@ -59,11 +28,11 @@ exports.getEstudianteMultasByMultaId = async (req, res) => {
 
 exports.createEstudianteMulta = async (req, res) => {
     try {
-        const { MUL_id_multa, EST_id_estudiante, EMU_estado_multa, EMU_creado_por } = req.body;
+        const { EMU_ID_EST_MULTA, MUL_ID_MULTA, EST_ID_ESTUDIANTE, EMU_ESTADO_MULTA, EMU_CREADO_POR } = req.body;
         
-        if (!MUL_id_multa || !EST_id_estudiante || !EMU_estado_multa || !EMU_creado_por) {
+        if (!EMU_ID_EST_MULTA || !MUL_ID_MULTA || !EST_ID_ESTUDIANTE || !EMU_ESTADO_MULTA || !EMU_CREADO_POR) {
             return res.status(400).json({
-                message: 'Faltan campos obligatorios (multa, estudiante, estado, creador)'
+                message: 'Faltan campos obligatorios en el registro de Estudiante y Multa'
             });
         }
 
@@ -71,7 +40,7 @@ exports.createEstudianteMulta = async (req, res) => {
         res.status(201).json(estudianteMulta);
     } catch (error) {
         res.status(500).json({
-            message: 'Error al crear el registro',
+            message: 'Error al crear el registro de Estudiante y Multa',
             error: error.message
         });
     }
@@ -79,21 +48,21 @@ exports.createEstudianteMulta = async (req, res) => {
 
 exports.updateEstudianteMulta = async (req, res) => {
     try {
-        const { multa_id, estudiante_id } = req.params;
-        const [affectedRows] = await EstudianteMultaStore.update(multa_id, estudiante_id, req.body);
+        const { EMU_ID_EST_MULTA } = req.params;
+        const [affectedRows] = await EstudianteMultaStore.update(EMU_ID_EST_MULTA, req.body);
         
         if (affectedRows === 0) {
             return res.status(404).json({ 
-                message: 'Registro no encontrado para actualizar' 
+                message: 'No se encontró el registro de Estudiante y Multa para actualizar' 
             });
         }
 
         res.status(200).json({ 
-            message: 'Actualizado correctamente' 
+            message: 'Registro de Estudiante y Multa actualizado correctamente' 
         });
     } catch (error) {
         res.status(500).json({
-            message: 'Error al actualizar el registro',
+            message: 'Error al actualizar el registro de Estudiante y Multa',
             error: error.message
         });
     }
@@ -101,21 +70,21 @@ exports.updateEstudianteMulta = async (req, res) => {
 
 exports.deleteEstudianteMulta = async (req, res) => {
     try {
-        const { multa_id, estudiante_id } = req.params;
-        const deletedRows = await EstudianteMultaStore.delete(multa_id, estudiante_id);
+        const { EMU_ID_EST_MULTA } = req.params;
+        const deletedRows = await EstudianteMultaStore.delete(EMU_ID_EST_MULTA);
         
         if (deletedRows === 0) {
             return res.status(404).json({ 
-                message: 'Registro no encontrado para eliminar' 
+                message: 'No se encontró el registro de Estudiante y Multa para eliminar' 
             });
         }
 
         res.status(200).json({ 
-            message: 'Eliminado correctamente' 
+            message: 'Registro de Estudiante y Multa eliminado correctamente' 
         });
     } catch (error) {
         res.status(500).json({
-            message: 'Error al eliminar el registro',
+            message: 'Error al eliminar el registro de Estudiante y Multa',
             error: error.message
         });
     }

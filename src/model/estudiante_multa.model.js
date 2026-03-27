@@ -2,42 +2,45 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
 const EstudianteMulta = sequelize.define('EstudianteMulta', {
-    MUL_id_multa: {
+    EMU_ID_EST_MULTA: {
         type: DataTypes.BIGINT,
         primaryKey: true,
         allowNull: false
     },
-    EST_id_estudiante: {
+    MUL_ID_MULTA: {
         type: DataTypes.BIGINT,
-        primaryKey: true,
         allowNull: false
     },
-    EMU_estado_multa: {
+    EST_ID_ESTUDIANTE: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+    },
+    EMU_ESTADO_MULTA: {
         type: DataTypes.CHAR(1),
         allowNull: false
     },
-    EMU_creado_por: {
+    EMU_CREADO_POR: {
         type: DataTypes.STRING(50),
         allowNull: false
     },
-    EMU_fecha_creacion: {
+    EMU_FECHA_CREACION: {
         type: DataTypes.DATE,
-        allowNull: false    
+        allowNull: false
     },
-    EMU_modificado_por: {
-        type: DataTypes.STRING(50),  
+    EMU_MODIFICADO_POR: {
+        type: DataTypes.STRING(50),
         allowNull: true
     },
-    EMU_fecha_modificacion: {
+    EMU_FECHA_MODIFICACION: {
         type: DataTypes.DATE,
         allowNull: true
-    },    
-    EMU_direccion_ip: {
+    },
+    EMU_DIRECCION_IP: {
         type: DataTypes.STRING(50),
         allowNull: true
     }
 }, {
-    tableName: 'ESTUDIANTE_MULTA',
+    tableName: 'PAR_ESTUDIANTE_MULTA',
     timestamps: false
 });
 
