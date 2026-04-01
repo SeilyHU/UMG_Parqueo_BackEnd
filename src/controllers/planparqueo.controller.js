@@ -110,3 +110,35 @@ async function actualizarPlan(req, res) {
 
     }
 }
+
+async function eliminarPlan(req, res) {
+
+    let connection;
+
+    try {
+
+        connection = await getConnection();
+
+        const { id } = req.params;
+
+        await connection.execute(
+            `
+            DELETE FROM PLAN_PARQUEO
+            WHERE PLA_ID_PLAN = :id
+            `,
+            { id: id },
+            { autoCommit: true }
+        );
+
+        res.json({
+            mensaje: "Plan eliminado correctamente"
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            error: error.message
+        });
+
+    }
+}
