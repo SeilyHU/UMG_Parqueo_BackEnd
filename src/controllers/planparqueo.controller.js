@@ -1,144 +1,116 @@
-async function crearPlan(req, res) {
+const PlanParqueoStore = require('../store/Plan_Parqueo.store');
 
-    let connection;
+/* OBTENER TODOS */
+exports.obtenerPlanes = async (req, res) => {
+    try {
+        const planes = await PlanParqueoStore.getAll();
 
+        res.status(200).json(planes);
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error al obtener los planes',
+            error: error.message
+        });
+    }
+};
+
+/* OBTENER POR ID */
+exports.obtenerPlanPorId = async (req, res) => {
     try {
 
-        connection = await getConnection();
+        const plan = await PlanParqueoStore.getById(req.params.id);
 
-        const { PLA_ID_PLAN, PLA_DESCRIPCION, PLA_PRECIO, PLA_ESTADO } = req.body;
+        if (!plan) {
+            return res.status(404).json({
+                message: 'Plan no encontrado'
+            });
+        }
 
-        await connection.execute(
-            `
-            INSERT INTO PLAN_PARQUEO
-            (PLA_ID_PLAN, PLA_DESCRIPCION, PLA_PRECIO, PLA_ESTADO)
-            VALUES
-            (:id, :descripcion, :precio, :estado)
-            `,
-            {
-                id: PLA_ID_PLAN,
-                descripcion: PLA_DESCRIPCION,
-                precio: PLA_PRECIO,
-                estado: PLA_ESTADO
-            },
-            { autoCommit: true }
-        );
+        res.status(200).json(plan);
 
-        res.json({
-            mensaje: "Plan creado correctamente"
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error al obtener el plan',
+            error: error.message
+        });
+    }
+};
+
+/* CREAR */
+exports.crearPlan = async (req, res) => {
+    try {
+
+        const existente = await PlanParqueoStore.getById(req.body.PLA_ID_PLAN);
+
+        if (existente) {
+            return res.status(400).json({
+                message: 'El ID del plan ya existe'
+            });
+        }
+
+        const plan = await PlanParqueoStore.create(req.body);
+
+        res.status(201).json({
+            message: 'Plan creado exitosamente',
+            data: plan
         });
 
     } catch (error) {
-
         res.status(500).json({
+            message: 'Error al crear el plan',
             error: error.message
         });
-
     }
-}
+};
 
-async function obtenerPlanes(req, res) {
-
-    let connection;
-
+/* ACTUALIZAR */
+exports.actualizarPlan = async (req, res) => {
     try {
 
-        connection = await getConnection();
-
-        const result = await connection.execute(
-            `
-            SELECT *
-            FROM PLAN_PARQUEO
-            `
+        const rowsAffected = await PlanParqueoStore.update(
+            req.params.id,
+            req.body
         );
 
-        res.json(result.rows);
+        if (rowsAffected === 0) {
+            return res.status(404).json({
+                message: 'Plan no encontrado para actualizar'
+            });
+        }
 
-    } catch (error) {
-
-        res.status(500).json({
-            error: error.message
-        });
-
-    }
-}
-
-async function actualizarPlan(req, res) {
-
-    let connection;
-
-    try {
-
-        connection = await getConnection();
-
-        const { id } = req.params;
-
-        const {
-            PLA_DESCRIPCION,
-            PLA_PRECIO,
-            PLA_ESTADO
-        } = req.body;
-
-        await connection.execute(
-            `
-            UPDATE PLAN_PARQUEO
-            SET
-                PLA_DESCRIPCION = :descripcion,
-                PLA_PRECIO = :precio,
-                PLA_ESTADO = :estado
-            WHERE
-                PLA_ID_PLAN = :id
-            `,
-            {
-                id: id,
-                descripcion: PLA_DESCRIPCION,
-                precio: PLA_PRECIO,
-                estado: PLA_ESTADO
-            },
-            { autoCommit: true }
-        );
-
-        res.json({
-            mensaje: "Plan actualizado correctamente"
+        res.status(200).json({
+            message: 'Plan actualizado exitosamente'
         });
 
     } catch (error) {
-
         res.status(500).json({
+            message: 'Error al actualizar el plan',
             error: error.message
         });
-
     }
-}
+};
 
-async function eliminarPlan(req, res) {
-
-    let connection;
-
+/* ELIMINAR */
+exports.eliminarPlan = async (req, res) => {
     try {
 
-        connection = await getConnection();
+        const rowsDeleted = await PlanParqueoStore.delete(req.params.id);
 
-        const { id } = req.params;
+        if (rowsDeleted === 0) {
+            return res.status(404).json({
+                message: 'Plan no encontrado para eliminar'
+            });
+        }
 
-        await connection.execute(
-            `
-            DELETE FROM PLAN_PARQUEO
-            WHERE PLA_ID_PLAN = :id
-            `,
-            { id: id },
-            { autoCommit: true }
-        );
-
-        res.json({
-            mensaje: "Plan eliminado correctamente"
+        res.status(200).json({
+            message: 'Plan eliminado exitosamente'
         });
 
     } catch (error) {
-
         res.status(500).json({
+            message: 'Error al eliminar el plan',
             error: error.message
         });
-
     }
-}
+};
