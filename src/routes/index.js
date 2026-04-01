@@ -1,11 +1,8 @@
-// Importar rutas de módulos
-const estudianteRoutes = require('./estudiante.routes');
-const multaRoutes = require('./multa.routes');
+/* Componentes */
+const test = require('./test.network');
 
 const routes = (app) => {
-
-  app.use('/api/estudiantes', estudianteRoutes);
-  app.use('/api/multa', multaRoutes);
+  app.use('/test', test);
 };
 
 module.exports = routes;
