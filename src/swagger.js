@@ -110,6 +110,86 @@ const options = {
             MUL_creado_por: 'admin',
             MUL_fecha_creacion: '2023-10-01T10:00:00Z'
           }
+        },
+
+        EstudianteMulta: {
+          type: 'object',
+          required: ['MUL_id_multa', 'EST_ID_ESTUDIANTE'],
+          properties: {
+            MUL_id_multa: {
+              type: 'integer',
+              format: 'int64',
+              description: 'ID de la multa'
+            },
+            EST_ID_ESTUDIANTE: {
+              type: 'integer',
+              description: 'ID del estudiante'
+            },
+            EM_monto_pagado: {
+              type: 'number',
+              format: 'decimal',
+              description: 'Monto pagado del total de la multa'
+            },
+            EM_monto_restante: {
+              type: 'number',
+              format: 'decimal',
+              description: 'Monto restante a pagar'
+            },
+            EM_fecha_pago: {
+              type: 'string',
+              format: 'date',
+              description: 'Fecha del pago'
+            },
+            EM_estado: {
+              type: 'string',
+              enum: ['pendiente', 'parcial', 'pagada'],
+              description: 'Estado de la multa para el estudiante'
+            },
+            EM_fecha_creacion: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Fecha de creación del registro'
+            },
+            EM_fecha_modificacion: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Fecha de última modificación'
+            }
+          },
+          example: {
+            MUL_id_multa: 1,
+            EST_ID_ESTUDIANTE: 1001,
+            EM_monto_pagado: 50.00,
+            EM_monto_restante: 100.00,
+            EM_fecha_pago: '2023-10-05',
+            EM_estado: 'parcial',
+            EM_fecha_creacion: '2023-10-01T10:00:00Z'
+          }
+        },
+        FormaPago: {
+          type: 'object',
+          required: ['FPG_id_forma_pago', 'FPG_nombre_forma', 'FPG_estado'],
+          properties: {
+            FPG_id_forma_pago: {
+              type: 'integer',
+              description: 'ID único de la forma de pago'
+            },
+            FPG_nombre_forma: {
+              type: 'string',
+              maxLength: 50,
+              description: 'Nombre de la forma de pago'
+            },
+            FPG_estado: {
+              type: 'string',
+              maxLength: 1,
+              description: 'Estado de la forma de pago (A=Activo, I=Inactivo)'
+            }
+          },
+          example: {
+            FPG_id_forma_pago: 1,
+            FPG_nombre_forma: 'Efectivo',
+            FPG_estado: 'A'
+          }
         }
 
       },
@@ -372,16 +452,57 @@ const options = {
             '500': { description: 'Error al actualizar la multa' }
           }
         },
-        delete: {
-          tags: ['Multas'],
-          summary: 'Elimina una multa',
+      },
+
+      '/api/forma_pago': {
+        get: {
+          tags: ['Formas de Pago'],
+          summary: 'Obtiene todas las formas de pago',
+          responses: {
+            '200': {
+              description: 'Lista de formas de pago obtenida correctamente',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/FormaPago' }
+                  }
+                }
+              }
+            },
+            '500': { description: 'Error al obtener las formas de pago' }
+          }
+        },
+        post: {
+          tags: ['Formas de Pago'],
+          summary: 'Crea una nueva forma de pago',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/FormaPago' }
+              }
+            }
+          },
+          responses: {
+            '201': { description: 'Forma de pago creada exitosamente' },
+            '400': { description: 'El ID de forma de pago ya existe' },
+            '500': { description: 'Error al crear la forma de pago' }
+          }
+        }
+      },
+
+      '/api/forma_pago/{id}': {
+        get: {
+          tags: ['Formas de Pago'],
+          summary: 'Obtiene una forma de pago por ID',
           parameters: [
             {
               name: 'id',
               in: 'path',
               required: true,
-              description: 'ID de la multa',
-              schema: { type: 'integer', format: 'int64' }
+              description: 'ID de la forma de pago',
+              schema: { type: 'integer' }
             }
           ],
           responses: {
@@ -404,6 +525,163 @@ const options = {
               type: 'array',
               items: { $ref: '#/components/schemas/Pago' }
             }
+            '200': {
+              description: 'Forma de pago obtenida correctamente',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/FormaPago' }
+                }
+              }
+            },
+            '404': { description: 'Forma de pago no encontrada' },
+            '500': { description: 'Error al obtener la forma de pago' }
+          }
+        },
+        put: {
+          tags: ['Formas de Pago'],
+          summary: 'Actualiza una forma de pago',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              description: 'ID de la forma de pago',
+              schema: { type: 'integer' }
+            }
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/FormaPago' }
+              }
+            }
+          },
+          responses: {
+            '200': { description: 'Forma de pago actualizada exitosamente' },
+            '404': { description: 'Forma de pago no encontrada para actualizar' },
+            '500': { description: 'Error al actualizar la forma de pago' }
+          }
+        }
+      },
+
+      '/api/estudiante_multa': {
+        get: {
+          tags: ['Estudiante-Multa'],
+          summary: 'Obtiene todas las relaciones estudiante-multa',
+          responses: {
+            '200': {
+              description: 'Lista de relaciones estudiante-multa obtenida correctamente',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/EstudianteMulta' }
+                  }
+                }
+              }
+            },
+            '500': { description: 'Error al obtener los registros' }
+          }
+        },
+        post: {
+          tags: ['Estudiante-Multa'],
+          summary: 'Crea una nueva relación estudiante-multa',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/EstudianteMulta' }
+              }
+            }
+          },
+          responses: {
+            '201': {
+              description: 'Relación estudiante-multa creada exitosamente',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/EstudianteMulta' }
+                }
+              }
+            },
+            '500': { description: 'Error al crear el registro' }
+          }
+        }
+      },
+
+      '/api/estudiante_multa/estudiante/{estudiante_id}': {
+        get: {
+          tags: ['Estudiante-Multa'],
+          summary: 'Obtiene todas las multas de un estudiante',
+          parameters: [
+            {
+              name: 'estudiante_id',
+              in: 'path',
+              required: true,
+              description: 'ID del estudiante',
+              schema: { type: 'integer' }
+            }
+          ],
+          responses: {
+            '200': {
+              description: 'Lista de multas del estudiante obtenida correctamente',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/EstudianteMulta' }
+                  }
+                }
+              }
+            },
+            '500': { description: 'Error al obtener por estudiante' }
+          }
+        }
+      },
+
+      '/api/estudiante_multa/{EMU_ID_EST_MULTA}': {
+        put: {
+          tags: ['Estudiante-Multa'],
+          summary: 'Actualiza un registro estudiante-multa por ID',
+          parameters: [
+            {
+              name: 'EMU_ID_EST_MULTA',
+              in: 'path',
+              required: true,
+              description: 'ID del registro de estudiante-multa',
+              schema: { type: 'integer' }
+            }
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/EstudianteMulta' }
+              }
+            }
+          },
+          responses: {
+            '200': { description: 'Registro actualizado correctamente' },
+            '404': { description: 'Registro no encontrado' },
+            '500': { description: 'Error al actualizar el registro' }
+          }
+        },
+        delete: {
+          tags: ['Estudiante-Multa'],
+          summary: 'Elimina un registro estudiante-multa por ID',
+          parameters: [
+            {
+              name: 'EMU_ID_EST_MULTA',
+              in: 'path',
+              required: true,
+              description: 'ID del registro de estudiante-multa',
+              schema: { type: 'integer' }
+            }
+          ],
+          responses: {
+            '200': { description: 'Registro eliminado correctamente' },
+            '404': { description: 'Registro no encontrado' },
+            '500': { description: 'Error al eliminar el registro' }
           }
         }
       },
@@ -503,7 +781,6 @@ const options = {
     }
 
   },
-
   apis: []
 };
 
