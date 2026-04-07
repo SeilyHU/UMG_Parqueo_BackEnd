@@ -164,6 +164,8 @@ const options = {
             EM_fecha_pago: '2023-10-05',
             EM_estado: 'parcial',
             EM_fecha_creacion: '2023-10-01T10:00:00Z'
+          }
+        },
         FormaPago: {
           type: 'object',
           required: ['FPG_id_forma_pago', 'FPG_nombre_forma', 'FPG_estado'],
