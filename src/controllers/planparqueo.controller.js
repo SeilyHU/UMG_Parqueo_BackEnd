@@ -91,3 +91,26 @@ exports.actualizarPlan = async (req, res) => {
     }
 };
 
+/* ELIMINAR */
+exports.eliminarPlan = async (req, res) => {
+    try {
+
+        const rowsDeleted = await PlanParqueoStore.delete(req.params.id);
+
+        if (rowsDeleted === 0) {
+            return res.status(404).json({
+                message: 'Plan no encontrado para eliminar'
+            });
+        }
+
+        res.status(200).json({
+            message: 'Plan eliminado exitosamente'
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error al eliminar el plan',
+            error: error.message
+        });
+    }
+};
