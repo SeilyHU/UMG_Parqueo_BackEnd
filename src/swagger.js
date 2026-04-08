@@ -168,56 +168,63 @@ const options = {
 
         EstudianteMulta: {
           type: 'object',
-          required: ['MUL_id_multa', 'EST_ID_ESTUDIANTE'],
+          required: ['EMU_ID_EST_MULTA', 'MUL_ID_MULTA', 'EST_CARNE_ESTUDIANTE', 'EST_ID_ESTUDIANTE', 'EMU_CREADO_POR'],
           properties: {
-            MUL_id_multa: {
+            EMU_ID_EST_MULTA: {
+              type: 'integer',
+              format: 'int64',
+              description: 'ID único del registro de estudiante-multa'
+            },
+            MUL_ID_MULTA: {
               type: 'integer',
               format: 'int64',
               description: 'ID de la multa'
+            },
+            EST_CARNE_ESTUDIANTE: {
+              type: 'integer',
+              format: 'int64',
+              description: 'Carné del estudiante'
             },
             EST_ID_ESTUDIANTE: {
               type: 'integer',
               description: 'ID del estudiante'
             },
-            EM_monto_pagado: {
-              type: 'number',
-              format: 'decimal',
-              description: 'Monto pagado del total de la multa'
-            },
-            EM_monto_restante: {
-              type: 'number',
-              format: 'decimal',
-              description: 'Monto restante a pagar'
-            },
-            EM_fecha_pago: {
+            EMU_ESTADO_MULTA: {
               type: 'string',
-              format: 'date',
-              description: 'Fecha del pago'
+              maxLength: 10,
+              description: 'Estado de la multa para el estudiante (Ej: Activa, Anulada, Pagada)'
             },
-            EM_estado: {
+            EMU_CREADO_POR: {
               type: 'string',
-              enum: ['pendiente', 'parcial', 'pagada'],
-              description: 'Estado de la multa para el estudiante'
+              maxLength: 50,
+              description: 'Usuario que creó el registro de estudiante-multa'
             },
-            EM_fecha_creacion: {
+            EMU_FECHA_CREACION: {
               type: 'string',
               format: 'date-time',
               description: 'Fecha de creación del registro'
             },
-            EM_fecha_modificacion: {
+            EMU_MODIFICADO_POR: {
+              type: 'string',
+              maxLength: 50,
+              description: 'Usuario que modificó el registro'
+            },
+            EMU_FECHA_MODIFICACION: {
               type: 'string',
               format: 'date-time',
-              description: 'Fecha de última modificación'
+              description: 'Fecha de última modificación del registro'
             }
           },
           example: {
-            MUL_id_multa: 1,
+            EMU_ID_EST_MULTA: 10,
+            MUL_ID_MULTA: 1,
+            EST_CARNE_ESTUDIANTE: 51902321585,
             EST_ID_ESTUDIANTE: 1001,
-            EM_monto_pagado: 50.00,
-            EM_monto_restante: 100.00,
-            EM_fecha_pago: '2023-10-05',
-            EM_estado: 'parcial',
-            EM_fecha_creacion: '2023-10-01T10:00:00Z'
+            EMU_ESTADO_MULTA: "Activa",
+            EMU_CREADO_POR: "Daniel",
+            EMU_FECHA_CREACION: "2023-10-01T10:00:00Z",
+            EMU_MODIFICADO_POR: "Luis",
+            EMU_FECHA_MODIFICACION: "2023-10-05T15:30:00Z"
           }
         },
         FormaPago: {
@@ -770,35 +777,53 @@ const options = {
             required: true,
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/EstudianteMulta' }
+                schema: {
+                  type: 'object',
+                  required: ['EMU_ID_EST_MULTA', 'MUL_ID_MULTA', 'EST_CARNE_ESTUDIANTE', 'EST_ID_ESTUDIANTE', 'EMU_CREADO_POR'],
+                  properties: {
+                    EMU_ID_EST_MULTA: { type: 'integer', format: 'int64' },
+                    MUL_ID_MULTA: { type: 'integer', format: 'int64' },
+                    EST_CARNE_ESTUDIANTE: { type: 'integer', format: 'int64' },
+                    EST_ID_ESTUDIANTE: { type: 'integer' },
+                    EMU_CREADO_POR: { type: 'string', maxLength: 50 }
+                  },
+                  example: {
+                    EMU_ID_EST_MULTA: 10,
+                    MUL_ID_MULTA: 1,
+                    EST_CARNE_ESTUDIANTE: 51902321585,
+                    EST_ID_ESTUDIANTE: 1001,
+                    EMU_CREADO_POR: "Daniel"
+                  }
+                }
               }
             }
           },
           responses: {
             '201': {
-              description: 'Relación estudiante-multa creada exitosamente',
+              description: 'Relación estudiante-multa creada exitosamente. EMU_FECHA_CREACION se asigna automáticamente. El estado se asigna automáticamente como Activa',
               content: {
                 'application/json': {
                   schema: { $ref: '#/components/schemas/EstudianteMulta' }
                 }
               }
             },
+            '400': { description: 'Faltan campos obligatorios' },
             '500': { description: 'Error al crear el registro' }
           }
         }
       },
 
-      '/api/estudiante_multa/estudiante/{estudiante_id}': {
+      '/api/estudiante_multa/carne/{EST_CARNE_ESTUDIANTE}': {
         get: {
           tags: ['Estudiante-Multa'],
-          summary: 'Obtiene todas las multas de un estudiante',
+          summary: 'Obtiene todas las multas de un estudiante por carné',
           parameters: [
             {
-              name: 'estudiante_id',
+              name: 'EST_CARNE_ESTUDIANTE',
               in: 'path',
               required: true,
-              description: 'ID del estudiante',
-              schema: { type: 'integer' }
+              description: 'Carné del estudiante',
+              schema: { type: 'string' }
             }
           ],
           responses: {
@@ -813,7 +838,7 @@ const options = {
                 }
               }
             },
-            '500': { description: 'Error al obtener por estudiante' }
+            '500': { description: 'Error al obtener por carné' }
           }
         }
       },
@@ -821,7 +846,7 @@ const options = {
       '/api/estudiante_multa/{EMU_ID_EST_MULTA}': {
         put: {
           tags: ['Estudiante-Multa'],
-          summary: 'Actualiza un registro estudiante-multa por ID',
+          summary: 'Actualiza el estado de la multa por ID',
           parameters: [
             {
               name: 'EMU_ID_EST_MULTA',
@@ -835,32 +860,26 @@ const options = {
             required: true,
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/EstudianteMulta' }
+                schema: {
+                  type: 'object',
+                  required: ['EMU_ESTADO_MULTA', 'EMU_MODIFICADO_POR'],
+                  properties: {
+                    EMU_ESTADO_MULTA: { type: 'string', maxLength: 10 },
+                    EMU_MODIFICADO_POR: { type: 'string', maxLength: 50 }
+                  },
+                  example: {
+                    EMU_ESTADO_MULTA: "Cancelada",
+                    EMU_MODIFICADO_POR: "Luis"
+                  }
+                }
               }
             }
           },
           responses: {
-            '200': { description: 'Registro actualizado correctamente' },
+            '200': { description: 'Registro actualizado correctamente. La fecha de modificación se actualiza automáticamente' },
             '404': { description: 'Registro no encontrado' },
+            '400': { description: 'Solicitud inválida o faltan campos' },
             '500': { description: 'Error al actualizar el registro' }
-          }
-        },
-        delete: {
-          tags: ['Estudiante-Multa'],
-          summary: 'Elimina un registro estudiante-multa por ID',
-          parameters: [
-            {
-              name: 'EMU_ID_EST_MULTA',
-              in: 'path',
-              required: true,
-              description: 'ID del registro de estudiante-multa',
-              schema: { type: 'integer' }
-            }
-          ],
-          responses: {
-            '200': { description: 'Registro eliminado correctamente' },
-            '404': { description: 'Registro no encontrado' },
-            '500': { description: 'Error al eliminar el registro' }
           }
         }
       },

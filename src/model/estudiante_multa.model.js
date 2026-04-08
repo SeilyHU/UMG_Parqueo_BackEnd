@@ -11,12 +11,16 @@ const EstudianteMulta = sequelize.define('EstudianteMulta', {
         type: DataTypes.BIGINT,
         allowNull: false
     },
+    EST_CARNE_ESTUDIANTE: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+    },
     EST_ID_ESTUDIANTE: {
         type: DataTypes.BIGINT,
         allowNull: false
     },
     EMU_ESTADO_MULTA: {
-        type: DataTypes.CHAR(1),
+        type: DataTypes.STRING(10),
         allowNull: false
     },
     EMU_CREADO_POR: {
@@ -25,7 +29,8 @@ const EstudianteMulta = sequelize.define('EstudianteMulta', {
     },
     EMU_FECHA_CREACION: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
     EMU_MODIFICADO_POR: {
         type: DataTypes.STRING(50),
@@ -33,12 +38,9 @@ const EstudianteMulta = sequelize.define('EstudianteMulta', {
     },
     EMU_FECHA_MODIFICACION: {
         type: DataTypes.DATE,
-        allowNull: true
+        allowNull: true,
+        defaultValue: null
     },
-    EMU_DIRECCION_IP: {
-        type: DataTypes.STRING(50),
-        allowNull: true
-    }
 }, {
     tableName: 'PAR_ESTUDIANTE_MULTA',
     timestamps: false
