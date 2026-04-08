@@ -1,6 +1,6 @@
 const PlanParqueoStore = require('../store/Plan_Parqueo.store');
 
-/* OBTENER TODOS */
+/* OBTENER DATOS */
 exports.obtenerPlanes = async (req, res) => {
     try {
         const planes = await PlanParqueoStore.getAll();
@@ -37,7 +37,7 @@ exports.obtenerPlanPorId = async (req, res) => {
     }
 };
 
-/* CREAR */
+/* CREAR DATOS */
 exports.crearPlan = async (req, res) => {
     try {
 
@@ -64,7 +64,7 @@ exports.crearPlan = async (req, res) => {
     }
 };
 
-/* ACTUALIZAR */
+/* ACTUALIZAR DATOS */
 exports.actualizarPlan = async (req, res) => {
     try {
 
@@ -91,7 +91,7 @@ exports.actualizarPlan = async (req, res) => {
     }
 };
 
-/* ELIMINAR */
+/* ELIMINAR DATOS */
 exports.eliminarPlan = async (req, res) => {
     try {
 
