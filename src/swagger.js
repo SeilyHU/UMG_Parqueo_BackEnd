@@ -1109,34 +1109,16 @@ const options = {
               "application/json": {
                 schema: {
                   type: "object",
-                  required: [
-                    "EMU_ESTUDIANTE_MULTA",
-                    "MUL_MULTA",
-                    "EST_CARNE",
-                    "EMU_CREADO_POR",
-                  ],
+                  required: ["MUL_MULTA", "EST_CARNE", "EMU_CREADO_POR"],
                   properties: {
-                    EMU_ESTUDIANTE_MULTA: { type: "integer", format: "int64" },
                     MUL_MULTA: { type: "integer", format: "int64" },
                     EST_CARNE: { type: "string", maxLength: 20 },
                     EMU_CREADO_POR: { type: "string", maxLength: 50 },
                     EMU_ESTADO_MULTA: { type: "char", maxLength: 1 },
-                    EMU_FECHA_CREACION: { type: "string", format: "date-time" },
-                    EMU_MODIFICADO_POR: { type: "string", maxLength: 50 },
-                    EMU_FECHA_MODIFICACION: {
-                      type: "string",
-                      format: "date-time",
-                    },
                   },
                   example: {
-                    EMU_ESTUDIANTE_MULTA: 10,
                     MUL_MULTA: 1,
-                    EST_CARNE: "51902321585",
-                    EMU_CREADO_POR: "Daniel",
-                    EMU_ESTADO_MULTA: "P",
-                    EMU_FECHA_CREACION: "2022-01-01T00:00:00.000Z",
-                    EMU_MODIFICADO_POR: "Daniel",
-                    EMU_FECHA_MODIFICACION: "2022-01-01T00:00:00.000Z",
+                    EST_CARNE: "5190-23-10007",
                   },
                 },
               },
@@ -1263,24 +1245,6 @@ const options = {
             404: { description: "Registro no encontrado" },
             400: { description: "Solicitud inválida o faltan campos" },
             500: { description: "Error al actualizar el registro" },
-          },
-        },
-        delete: {
-          tags: ["Estudiante-Multa"],
-          summary: "Elimina el registro de estudiante-multa",
-          parameters: [
-            {
-              name: "EMU_ESTUDIANTE_MULTA",
-              in: "path",
-              required: true,
-              description: "ID del registro de estudiante-multa",
-              schema: { type: "integer" },
-            },
-          ],
-          responses: {
-            200: { description: "Registro eliminado correctamente" },
-            404: { description: "Registro no encontrado" },
-            500: { description: "Error al eliminar el registro" },
           },
         },
       },
