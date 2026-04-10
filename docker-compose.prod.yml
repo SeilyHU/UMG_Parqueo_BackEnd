@@ -1,11 +1,13 @@
-version: "3.8"
 services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile    # el Dockerfile optimizado de prod
+      dockerfile: Dockerfile   
     container_name: backend-prod
+    network_mode: "bridge"      
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=production    
+    env_file:
+      - .env                    
