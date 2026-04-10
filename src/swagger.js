@@ -104,82 +104,72 @@ const options = {
         Multa: {
           type: "object",
           required: [
-            "MUL_id_multa",
-            "MUL_monto_total",
-            "MUL_monto_base",
-            "MUL_impuesto",
-            "MUL_descripcion",
-            "MUL_fecha",
-            "MUL_fecha_vencimiento",
-            "MUL_creado_por",
+            "MUL_MULTA",
+            "MUL_MONTO_TOTAL",
+            "MUL_DESCRIPCION",
+            "MUL_FECHA",
+            "MUL_FECHA_VENCIMIENTO",
+            "MUL_CREADO_POR",
+            "MUL_MODIFICADO_POR",
+            "MUL_FECHA_MODIFICACION",
           ],
           properties: {
-            MUL_id_multa: {
+            MUL_MULTA: {
               type: "integer",
               format: "int64",
               description: "ID único de la multa",
             },
-            MUL_monto_total: {
+            MUL_MONTO_TOTAL: {
               type: "number",
               format: "decimal",
               description: "Monto total de la multa",
             },
-            MUL_monto_base: {
-              type: "number",
-              format: "decimal",
-              description: "Monto base de la multa",
-            },
-            MUL_impuesto: {
-              type: "number",
-              format: "decimal",
-              description: "Impuesto aplicado a la multa",
-            },
-            MUL_descripcion: {
+            MUL_DESCRIPCION: {
               type: "string",
               maxLength: 100,
               description: "Descripción de la multa",
             },
-            MUL_fecha: {
+            MUL_FECHA: {
               type: "string",
               format: "date-time",
               description: "Fecha de la multa",
             },
-            MUL_fecha_vencimiento: {
+            MUL_FECHA_VENCIMIENTO: {
               type: "string",
               format: "date",
               description: "Fecha de vencimiento de la multa",
             },
-            MUL_creado_por: {
+            MUL_CREADO_POR: {
               type: "string",
               maxLength: 50,
               description: "Usuario que creó la multa",
             },
-            MUL_fecha_creacion: {
+            MUL_FECHA_CREACION: {
               type: "string",
               format: "date-time",
               description: "Fecha de creación de la multa",
             },
-            MUL_modificado_por: {
+            MUL_MODIFICADO_POR: {
               type: "string",
               maxLength: 50,
               description: "Usuario que modificó la multa",
             },
-            MUL_fecha_modificacion: {
+            MUL_FECHA_MODIFICACION: {
               type: "string",
               format: "date-time",
               description: "Fecha de modificación de la multa",
             },
           },
           example: {
-            MUL_id_multa: 1,
-            MUL_monto_total: 150.0,
-            MUL_monto_base: 120.0,
-            MUL_impuesto: 30.0,
-            MUL_descripcion: "Multa por estacionamiento indebido",
-            MUL_fecha: "2023-10-01T10:00:00Z",
-            MUL_fecha_vencimiento: "2023-10-15",
-            MUL_creado_por: "admin",
-            MUL_fecha_creacion: "2023-10-01T10:00:00Z",
+            MUL_MULTA: 1,
+            MUL_MONTO_TOTAL: 150.0,
+            MUL_DESCRIPCION: "Multa por estacionamiento indebido",
+            MUL_FECHA: "2023-10-01T10:00:00Z",
+            MUL_FECHA_VENCIMIENTO: "2023-10-15",
+            MUL_CREADO_POR: "admin",
+            MUL_FECHA_CREACION: "2023-10-01T10:00:00Z",
+            MUL_MODIFICADO_POR: "admin",
+            MUL_FECHA_MODIFICACION: "2023-10-01T10:00:00Z",
           },
         },
         // EstudianteMulta
@@ -273,12 +263,14 @@ const options = {
             MOR_MOTIVO: {
               type: "string",
               maxLength: 100,
-              description: "Motivo por el cual el estudiante fue marcado como moroso",
+              description:
+                "Motivo por el cual el estudiante fue marcado como moroso",
             },
             MOR_ESTADO: {
               type: "string",
               maxLength: 1,
-              description: "Estado del registro de morosidad (A=Activo, I=Inactivo)",
+              description:
+                "Estado del registro de morosidad (A=Activo, I=Inactivo)",
             },
           },
           example: {
@@ -628,7 +620,8 @@ const options = {
           summary: "Obtiene todos los estudiantes morosos",
           responses: {
             200: {
-              description: "Lista de estudiantes morosos obtenida correctamente",
+              description:
+                "Lista de estudiantes morosos obtenida correctamente",
               content: {
                 "application/json": {
                   schema: {
@@ -653,9 +646,16 @@ const options = {
             },
           },
           responses: {
-            201: { description: "Registro de estudiante moroso creado exitosamente" },
-            400: { description: "Faltan campos obligatorios o el formato es incorrecto" },
-            500: { description: "Error al crear el registro de estudiante moroso" },
+            201: {
+              description: "Registro de estudiante moroso creado exitosamente",
+            },
+            400: {
+              description:
+                "Faltan campos obligatorios o el formato es incorrecto",
+            },
+            500: {
+              description: "Error al crear el registro de estudiante moroso",
+            },
           },
         },
       },
@@ -757,7 +757,9 @@ const options = {
           responses: {
             200: { description: "Registro moroso actualizado exitosamente" },
             400: { description: "Solicitud inválida o formato incorrecto" },
-            404: { description: "Registro moroso no encontrado para actualizar" },
+            404: {
+              description: "Registro moroso no encontrado para actualizar",
+            },
             500: { description: "Error al actualizar el registro moroso" },
           },
         },
