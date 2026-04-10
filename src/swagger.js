@@ -238,17 +238,13 @@ const options = {
         // EstudianteMoroso
         EstudianteMoroso: {
           type: "object",
-          required: [
-            "MOR_BLACKLIST_LOG",
-            "EST_CARNE",
-            "MOR_FECHA_AGREGADO",
-            "MOR_ESTADO",
-          ],
+          required: ["EST_CARNE", "MOR_MOTIVO", "MOR_ESTADO"],
           properties: {
             MOR_BLACKLIST_LOG: {
               type: "integer",
               format: "int64",
-              description: "ID único del registro de estudiante moroso",
+              description:
+                "ID único del registro de estudiante moroso (autogenerado)",
             },
             EST_CARNE: {
               type: "string",
@@ -257,8 +253,8 @@ const options = {
             },
             MOR_FECHA_AGREGADO: {
               type: "string",
-              format: "date-time",
-              description: "Fecha en que se añadió a la lista de morosos",
+              description:
+                "Fecha y hora en que se añadió a la lista de morosos (DD/MM/YYYY HH:mm:ss)",
             },
             MOR_MOTIVO: {
               type: "string",
@@ -269,14 +265,13 @@ const options = {
             MOR_ESTADO: {
               type: "string",
               maxLength: 1,
+              enum: ["A", "I", "S"],
               description:
-                "Estado del registro de morosidad (A=Activo, I=Inactivo)",
+                "Estado del registro de morosidad (A=Activo, I=Inactivo, S=Suspendido)",
             },
           },
           example: {
-            MOR_BLACKLIST_LOG: 1,
             EST_CARNE: "5190-23-202034",
-            MOR_FECHA_AGREGADO: "2024-03-01T10:00:00Z",
             MOR_MOTIVO: "Pago atrasado",
             MOR_ESTADO: "A",
           },
@@ -642,6 +637,11 @@ const options = {
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/EstudianteMoroso" },
+                example: {
+                  EST_CARNE: "5190-23-202034",
+                  MOR_MOTIVO: "Pago atrasado",
+                  MOR_ESTADO: "A",
+                },
               },
             },
           },
@@ -692,31 +692,6 @@ const options = {
       },
 
       "/api/estudiante_moroso/{MOR_BLACKLIST_LOG}": {
-        get: {
-          tags: ["Estudiante Moroso"],
-          summary: "Obtiene un registro de estudiante moroso por ID",
-          parameters: [
-            {
-              name: "MOR_BLACKLIST_LOG",
-              in: "path",
-              required: true,
-              description: "ID del registro de estudiante moroso",
-              schema: { type: "integer", format: "int64" },
-            },
-          ],
-          responses: {
-            200: {
-              description: "Registro moroso obtenido correctamente",
-              content: {
-                "application/json": {
-                  schema: { $ref: "#/components/schemas/EstudianteMoroso" },
-                },
-              },
-            },
-            404: { description: "Registro moroso no encontrado" },
-            500: { description: "Error al buscar el registro moroso" },
-          },
-        },
         put: {
           tags: ["Estudiante Moroso"],
           summary: "Actualiza un registro de estudiante moroso",
@@ -736,17 +711,14 @@ const options = {
                 schema: {
                   type: "object",
                   properties: {
-                    EST_CARNE: { type: "string", maxLength: 20 },
-                    MOR_FECHA_AGREGADO: {
-                      type: "string",
-                      format: "date-time",
-                    },
                     MOR_MOTIVO: { type: "string", maxLength: 100 },
-                    MOR_ESTADO: { type: "string", maxLength: 1 },
+                    MOR_ESTADO: {
+                      type: "string",
+                      maxLength: 1,
+                      enum: ["A", "I", "S"],
+                    },
                   },
                   example: {
-                    EST_CARNE: "5190-23-202034",
-                    MOR_FECHA_AGREGADO: "2024-03-15T10:00:00Z",
                     MOR_MOTIVO: "Pago parcial recibido",
                     MOR_ESTADO: "A",
                   },
@@ -943,24 +915,6 @@ const options = {
             500: { description: "Error al actualizar la forma de pago" },
           },
         },
-        delete: {
-          tags: ["Formas de Pago"],
-          summary: "Elimina una forma de pago",
-          parameters: [
-            {
-              name: "id",
-              in: "path",
-              required: true,
-              description: "ID de la forma de pago",
-              schema: { type: "integer" },
-            },
-          ],
-          responses: {
-            200: { description: "Forma de pago eliminada exitosamente" },
-            404: { description: "Forma de pago no encontrada para eliminar" },
-            500: { description: "Error al eliminar la forma de pago" },
-          },
-        },
       },
 
       // Rutas de Pagos
@@ -1155,34 +1109,16 @@ const options = {
               "application/json": {
                 schema: {
                   type: "object",
-                  required: [
-                    "EMU_ESTUDIANTE_MULTA",
-                    "MUL_MULTA",
-                    "EST_CARNE",
-                    "EMU_CREADO_POR",
-                  ],
+                  required: ["MUL_MULTA", "EST_CARNE", "EMU_CREADO_POR"],
                   properties: {
-                    EMU_ESTUDIANTE_MULTA: { type: "integer", format: "int64" },
                     MUL_MULTA: { type: "integer", format: "int64" },
                     EST_CARNE: { type: "string", maxLength: 20 },
                     EMU_CREADO_POR: { type: "string", maxLength: 50 },
                     EMU_ESTADO_MULTA: { type: "char", maxLength: 1 },
-                    EMU_FECHA_CREACION: { type: "string", format: "date-time" },
-                    EMU_MODIFICADO_POR: { type: "string", maxLength: 50 },
-                    EMU_FECHA_MODIFICACION: {
-                      type: "string",
-                      format: "date-time",
-                    },
                   },
                   example: {
-                    EMU_ESTUDIANTE_MULTA: 10,
                     MUL_MULTA: 1,
-                    EST_CARNE: "51902321585",
-                    EMU_CREADO_POR: "Daniel",
-                    EMU_ESTADO_MULTA: "P",
-                    EMU_FECHA_CREACION: "2022-01-01T00:00:00.000Z",
-                    EMU_MODIFICADO_POR: "Daniel",
-                    EMU_FECHA_MODIFICACION: "2022-01-01T00:00:00.000Z",
+                    EST_CARNE: "5190-23-10007",
                   },
                 },
               },
@@ -1309,24 +1245,6 @@ const options = {
             404: { description: "Registro no encontrado" },
             400: { description: "Solicitud inválida o faltan campos" },
             500: { description: "Error al actualizar el registro" },
-          },
-        },
-        delete: {
-          tags: ["Estudiante-Multa"],
-          summary: "Elimina el registro de estudiante-multa",
-          parameters: [
-            {
-              name: "EMU_ESTUDIANTE_MULTA",
-              in: "path",
-              required: true,
-              description: "ID del registro de estudiante-multa",
-              schema: { type: "integer" },
-            },
-          ],
-          responses: {
-            200: { description: "Registro eliminado correctamente" },
-            404: { description: "Registro no encontrado" },
-            500: { description: "Error al eliminar el registro" },
           },
         },
       },
