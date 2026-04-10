@@ -32,6 +32,16 @@ exports.createAsignacion = async (req, res) => {
             });
         }
 
+        const carneRegex = /^[0-9-]+$/;
+        if (!carneRegex.test(carne_usuario)) {
+            return res.status(400).json({ 
+                success: false,
+                status: 400,
+                message: 'Formato de carné inválido.',
+                details: 'El carné solo debe contener números y guiones.'
+            });
+        }
+
         const espacioFisico = await EspacioStore.getById(ES_Espacio);
         if (!espacioFisico) {
             return res.status(404).json({ 
