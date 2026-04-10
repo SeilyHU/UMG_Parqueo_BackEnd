@@ -692,31 +692,6 @@ const options = {
       },
 
       "/api/estudiante_moroso/{MOR_BLACKLIST_LOG}": {
-        get: {
-          tags: ["Estudiante Moroso"],
-          summary: "Obtiene un registro de estudiante moroso por ID",
-          parameters: [
-            {
-              name: "MOR_BLACKLIST_LOG",
-              in: "path",
-              required: true,
-              description: "ID del registro de estudiante moroso",
-              schema: { type: "integer", format: "int64" },
-            },
-          ],
-          responses: {
-            200: {
-              description: "Registro moroso obtenido correctamente",
-              content: {
-                "application/json": {
-                  schema: { $ref: "#/components/schemas/EstudianteMoroso" },
-                },
-              },
-            },
-            404: { description: "Registro moroso no encontrado" },
-            500: { description: "Error al buscar el registro moroso" },
-          },
-        },
         put: {
           tags: ["Estudiante Moroso"],
           summary: "Actualiza un registro de estudiante moroso",

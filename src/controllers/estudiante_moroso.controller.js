@@ -33,26 +33,6 @@ exports.getEstudianteMorosoByCarne = async (req, res) => {
   }
 };
 
-exports.getEstudianteMorosoById = async (req, res) => {
-  try {
-    const { MOR_BLACKLIST_LOG } = req.params;
-    const moroso = await EstudianteMorosoStore.getById(MOR_BLACKLIST_LOG);
-
-    if (!moroso) {
-      return res.status(404).json({
-        message: 'Estudiante moroso no encontrado',
-      });
-    }
-
-    res.status(200).json(moroso);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error al buscar el estudiante moroso por ID',
-      error: error.message,
-    });
-  }
-};
-
 exports.createEstudianteMoroso = async (req, res) => {
   try {
     const {
