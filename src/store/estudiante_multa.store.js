@@ -15,11 +15,11 @@ class EstudianteMultaStore {
 
   static async create(data) {
     return await EstudianteMulta.create({
-      EMU_ESTUDIANTE_MULTA: data.EMU_ESTUDIANTE_MULTA,
       MUL_MULTA: data.MUL_MULTA,
       EST_CARNE: data.EST_CARNE,
       EMU_ESTADO_MULTA: data.EMU_ESTADO_MULTA,
       EMU_CREADO_POR: data.EMU_CREADO_POR,
+      EMU_FECHA_CREACION: new Date(),
       EMU_MODIFICADO_POR: null,
       EMU_FECHA_MODIFICACION: null,
     });
