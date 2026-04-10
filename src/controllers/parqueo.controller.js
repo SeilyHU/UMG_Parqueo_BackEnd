@@ -5,17 +5,14 @@ const ResponseHandler = require('../utils/responseHandler');
 function validateParqueo(data) {
     const errors = [];
 
-    // 🔥 Nombre: letras + números + espacios (sin símbolos)
     if (!data.PQ_Nombre || !/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(data.PQ_Nombre)) {
         errors.push('El nombre solo debe contener letras, números y espacios (sin símbolos)');
     }
 
-    // Dirección válida
     if (!data.PQ_Direccion || !/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s,#.-]+$/.test(data.PQ_Direccion)) {
         errors.push('La dirección contiene caracteres inválidos');
     }
 
-    // Capacidad válida
     if (
         data.PQ_Capacidad === undefined ||
         !Number.isInteger(data.PQ_Capacidad) ||
@@ -27,13 +24,26 @@ function validateParqueo(data) {
     return errors;
 }
 
-// Obtener todos
+// 🔥 OBTENER TODOS (CON DEBUG)
 exports.getAllParqueos = async (req, res) => { 
     try {
         const parqueos = await ParqueoStore.getAll();
-        return ResponseHandler.success(res, parqueos, 'Parqueos obtenidos correctamente');
+
+        return ResponseHandler.success(
+            res,
+            parqueos,
+            'Parqueos obtenidos correctamente'
+        );
+
     } catch (error) { 
-        return ResponseHandler.error(res, 'Error al obtener los parqueos', 500, error.message);
+        console.error('❌ ERROR EN getAllParqueos:', error); // 🔥 DEBUG
+
+        return ResponseHandler.error(
+            res,
+            'Error al obtener los parqueos',
+            500,
+            error.message || error.toString()
+        );
     }
 };
 
@@ -51,25 +61,30 @@ exports.getParqueoById = async (req, res) => {
         }
 
         return ResponseHandler.success(res, parqueo, 'Parqueo encontrado');
+
     } catch (error) {
-        return ResponseHandler.error(res, 'Error al obtener el parqueo', 500, error.message);
+        console.error('❌ ERROR EN getParqueoById:', error); // 🔥 DEBUG
+
+        return ResponseHandler.error(
+            res,
+            'Error al obtener el parqueo',
+            500,
+            error.message || error.toString()
+        );
     }
 };
 
 // Crear
 exports.createParqueo = async (req, res) => { 
     try {
-        // 🔹 LIMPIAR DATOS
         req.body.PQ_Nombre = req.body.PQ_Nombre?.trim();
         req.body.PQ_Direccion = req.body.PQ_Direccion?.trim();
 
-        // 🔹 VALIDAR
         const errors = validateParqueo(req.body);
         if (errors.length > 0) {
             return ResponseHandler.error(res, 'Datos inválidos', 400, errors);
         }
 
-        // 🔹 VALIDAR DUPLICADO
         const existente = await ParqueoStore.getAll();
         const repetido = existente.find(p => 
             p.PQ_Nombre.toLowerCase() === req.body.PQ_Nombre.toLowerCase()
@@ -88,13 +103,19 @@ exports.createParqueo = async (req, res) => {
         return ResponseHandler.success(res, nuevo, 'Parqueo creado exitosamente', 201);
 
     } catch (error) { 
+        console.error('❌ ERROR EN createParqueo:', error); // 🔥 DEBUG
 
         if (error.name === 'SequelizeValidationError') {
             const detalles = error.errors.map(e => e.message);
             return ResponseHandler.error(res, 'Error de validación', 400, detalles);
         }
 
-        return ResponseHandler.error(res, 'Error al crear el parqueo', 500, error.message);
+        return ResponseHandler.error(
+            res,
+            'Error al crear el parqueo',
+            500,
+            error.message || error.toString()
+        );
     }
 };
 
@@ -105,11 +126,9 @@ exports.updateParqueo = async (req, res) => {
             return ResponseHandler.error(res, 'ID inválido', 400);
         }
 
-        // 🔹 LIMPIAR DATOS
         req.body.PQ_Nombre = req.body.PQ_Nombre?.trim();
         req.body.PQ_Direccion = req.body.PQ_Direccion?.trim();
 
-        // 🔹 VALIDAR
         const errors = validateParqueo(req.body);
         if (errors.length > 0) {
             return ResponseHandler.error(res, 'Datos inválidos', 400, errors);
@@ -124,7 +143,14 @@ exports.updateParqueo = async (req, res) => {
         return ResponseHandler.success(res, null, 'Parqueo actualizado exitosamente');
 
     } catch (error) { 
-        return ResponseHandler.error(res, 'Error al actualizar el parqueo', 500, error.message);
+        console.error('❌ ERROR EN updateParqueo:', error); // 🔥 DEBUG
+
+        return ResponseHandler.error(
+            res,
+            'Error al actualizar el parqueo',
+            500,
+            error.message || error.toString()
+        );
     }
 };
 
@@ -144,6 +170,13 @@ exports.deleteParqueo = async (req, res) => {
         return ResponseHandler.success(res, null, 'Parqueo eliminado exitosamente');
 
     } catch (error) { 
-        return ResponseHandler.error(res, 'Error al eliminar el parqueo', 500, error.message);
+        console.error('❌ ERROR EN deleteParqueo:', error); // 🔥 DEBUG
+
+        return ResponseHandler.error(
+            res,
+            'Error al eliminar el parqueo',
+            500,
+            error.message || error.toString()
+        );
     }
 };
