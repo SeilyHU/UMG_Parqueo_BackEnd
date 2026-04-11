@@ -295,19 +295,8 @@ const options = {
         // Pago
         Pago: {
           type: "object",
-          required: [
-            "PAG_PAGO",
-            "EST_CARNE",
-            "PLN_PLAN",
-            "FPG_FORMA_PAGO",
-            "PAG_FECHA_PAGO",
-            "PAG_MONTO_TOTAL",
-          ],
+          required: ["EST_CARNE", "PLN_PLAN", "FPG_FORMA_PAGO"],
           properties: {
-            PAG_PAGO: {
-              type: "integer",
-              description: "ID único del pago",
-            },
             EST_CARNE: {
               type: "string",
               description: "Carné del estudiante",
@@ -350,16 +339,10 @@ const options = {
             },
           },
           example: {
-            PAG_PAGO: 1,
-            EST_CARNE: "51902310027",
+            EST_CARNE: "5190-23-202034",
             PLN_PLAN: 1,
             FPG_FORMA_PAGO: 1,
             MUL_MULTA: null,
-            PAG_FECHA_PAGO: "2024-03-01T10:00:00Z",
-            PAG_MONTO_TOTAL: 250.0,
-            PAG_ESTADO: "P",
-            PAG_FECHA_CREACION: "2024-03-01T10:00:00Z",
-            STRIPE_PAYMENT_INTENT_ID: "pi_123456789",
           },
         },
       },
@@ -463,25 +446,6 @@ const options = {
           responses: {
             200: {
               description: "Plan actualizado",
-            },
-          },
-        },
-        delete: {
-          tags: ["Plan Parqueo"],
-          summary: "Elimina un plan",
-          parameters: [
-            {
-              name: "id",
-              in: "path",
-              required: true,
-              schema: {
-                type: "integer",
-              },
-            },
-          ],
-          responses: {
-            200: {
-              description: "Plan eliminado",
             },
           },
         },
@@ -1162,79 +1126,6 @@ const options = {
               },
             },
             500: { description: "Error al obtener por carné" },
-          },
-        },
-      },
-
-      // Rutas de Estudiante-Multa por ID
-      "/api/estudiante_multa/{EMU_ESTUDIANTE_MULTA}": {
-        get: {
-          tags: ["Estudiante-Multa"],
-          summary: "Obtiene el registro de estudiante-multa por ID",
-          parameters: [
-            {
-              name: "EMU_ESTUDIANTE_MULTA",
-              in: "path",
-              required: true,
-              description: "ID del registro de estudiante-multa",
-              schema: { type: "integer" },
-            },
-          ],
-          responses: {
-            200: {
-              description:
-                "Registro de estudiante-multa obtenido correctamente",
-              content: {
-                "application/json": {
-                  schema: {
-                    $ref: "#/components/schemas/EstudianteMulta",
-                  },
-                },
-              },
-            },
-            404: { description: "Registro no encontrado" },
-            500: { description: "Error al obtener el registro" },
-          },
-        },
-        put: {
-          tags: ["Estudiante-Multa"],
-          summary: "Actualiza el estado de la multa por ID",
-          parameters: [
-            {
-              name: "EMU_ESTUDIANTE_MULTA",
-              in: "path",
-              required: true,
-              description: "ID del registro de estudiante-multa",
-              schema: { type: "integer" },
-            },
-          ],
-          requestBody: {
-            required: true,
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  required: ["EMU_ESTADO_MULTA", "EMU_MODIFICADO_POR"],
-                  properties: {
-                    EMU_ESTADO_MULTA: { type: "char", maxLength: 1 },
-                    EMU_MODIFICADO_POR: { type: "string", maxLength: 50 },
-                  },
-                  example: {
-                    EMU_ESTADO_MULTA: "C",
-                    EMU_MODIFICADO_POR: "Luis",
-                  },
-                },
-              },
-            },
-          },
-          responses: {
-            200: {
-              description:
-                "Registro actualizado correctamente. La fecha de modificación se actualiza automáticamente",
-            },
-            404: { description: "Registro no encontrado" },
-            400: { description: "Solicitud inválida o faltan campos" },
-            500: { description: "Error al actualizar el registro" },
           },
         },
       },

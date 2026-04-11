@@ -8,6 +8,8 @@ const Pago = sequelize.define(
       type: DataTypes.BIGINT,
       primaryKey: true,
       allowNull: false,
+      autoIncrement: true,
+      field: 'PAG_PAGO'
     },
     EST_CARNE: {
       type: DataTypes.STRING(20),
